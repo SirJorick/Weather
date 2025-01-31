@@ -228,7 +228,7 @@ def toggle_fetch(textbox, window, progress_bar, timezone_combobox, radius_list, 
 def create_gui():
     window = tk.Tk()
     window.title("Typhoon Detection Results")
-    window.geometry("600x650")
+    window.geometry("500x640")
     window.config(bg="#f0f0f0")  # Set background color for window
 
     # Create frames for better organization

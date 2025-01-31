@@ -211,7 +211,7 @@ def on_combobox_change(event):
 # Create main application window
 root = tk.Tk()
 root.title("Weather Info")
-root.geometry("600x800")  # Set window size
+root.geometry("600x850")  # Set window size
 root.configure(bg="#f4f4f9")  # Set a light background color for the main window
 
 running = False  # App is not running by default
@@ -224,7 +224,7 @@ combobox.set(default_location)  # Set the default location in the combobox
 combobox.grid(row=0, column=0, columnspan=2, padx=20, pady=10)
 
 # Textbox to display coordinates and weather info
-text_output = scrolledtext.ScrolledText(root, wrap=tk.WORD, width=75, height=40, state=tk.DISABLED, font=("Arial", 10), bg="#ffffff", fg="#333333", bd=2)
+text_output = scrolledtext.ScrolledText(root, wrap=tk.WORD, width=68, height=40, state=tk.DISABLED, font=("Arial", 11), bg="#f9f9f9", fg="#333333", bd=2)
 text_output.grid(row=1, column=0, columnspan=2, padx=20, pady=10)
 
 
@@ -247,6 +247,7 @@ time_label.grid(row=0, column=1, padx=10, pady=20, sticky="e")
 # Button to delete the selected address
 delete_button = tk.Button(footer_frame, text="Delete Address", command=lambda: delete_address(combobox.get().strip()), bg="#e74c3c", fg="white", font=("Arial", 10), relief="raised", bd=2)
 delete_button.grid(row=0, column=3, padx=10, pady=10, sticky="e")
+
 
 # Start time update loop
 update_time()

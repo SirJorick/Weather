@@ -14,10 +14,11 @@ def load_weather_config():
     # Return the API key and URL for later use
     return weather_api_key, weather_url
 
-def get_rain_message(precip_mm):
-    """Returns a precise rain message based on precipitation levels."""
+
+def get_rain_message(precip_mm, weather_condition=None):
+    """Returns a precise rain message based on precipitation levels and weather conditions."""
+
     # Dictionary of precipitation levels and their corresponding messages
-    # Predefined sorted keys for the rain levels
     rain_levels = {
         500: "Catastrophic rainfall! Severe flooding, landslides, and extreme danger to life and property.",
         400: "Exceptionally heavy rain! Widespread destruction and life-threatening conditions expected.",
@@ -62,14 +63,22 @@ def get_rain_message(precip_mm):
     # Sort the keys once (when defining the function)
     rain_keys = sorted(rain_levels.keys(), reverse=True)
 
-    def get_rain_message(precip_mm):
-        """Returns a precise rain message based on precipitation levels."""
-        # Loop through the sorted rain levels and return the first matching message
+    # Check if the weather condition includes "rain"
+    if weather_condition and "rain" in weather_condition.lower():
+        # If it's raining (e.g., "Light rain" or "Heavy rain"), handle it
+        if precip_mm > 0:
+            return rain_levels.get(precip_mm, "Heavy rain detected. Conditions are dangerous!")
+        else:
+            return "Light rain detected. A light umbrella is recommended."
+
+    # If there's any precipitation (non-zero), classify as rain
+    if precip_mm > 0:
         for key in rain_keys:
             if precip_mm >= key:
                 return rain_levels[key]
 
-        return "No significant rain detected."
+    # If no rain or very light drizzle
+    return "No significant rain detected."
 
 
 def detect_typhoon_level(precip_mm, wind_kph, region="default", storm_intensity=None):

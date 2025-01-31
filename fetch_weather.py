@@ -264,25 +264,25 @@ def get_weather(lat, lng):
 
             # Returning formatted weather data with moon phase and icons
             return (
-                f"{condition_icon} Weather Condition: {condition}\n"
                 f"🌡 Temperature: {temp_c}°C (Feels Like: {feels_like_c}°C)\n"
-                f"❄ Wind Chill: {wind_chill}\n"
                 f"💨 Wind: {wind_kph} kph (Direction: {wind_dir} - {wind_dir_degrees}°)\n\n"
                 f"🌪 Wind Gusts: {wind_gust_kph} kph\n"
-                f"💧 Humidity: {humidity}%\n"
-                f"☁️ Cloud Cover: {cloud_cover}%\n"
-                f"🌧 Precipitation: {precip_mm} mm\n"
+                f"❄ Wind Chill: {wind_chill}\n"
+                f"☁ Cloud Cover: {cloud_cover}%\n"
                 f"🌞 UV Index: {uv_index}\n"
-                f"👀 Visibility: {visibility_km} km\n"
-                f"🔽 Pressure: {pressure_mb} mb\n"
+                f"👀 Visibility: {visibility_km} km\n\n"
+                f"🔽 Pressure: {pressure_mb} mb\n\n"
                 f"⏳ Daylight Duration: {astro.get('sunset', 'N/A')} - {astro.get('sunrise', 'N/A')}\n"
                 f"🕛 Solar Noon: {solar_noon}\n\n"
-                f"🌕 Moon Phase: {moon_phase}\n\n"
+
                 f"{hsi}\n\n"
+                f"🌕 Moon Phase: {moon_phase}\n"
                 f"🌅 Sunrise: {astro.get('sunrise', 'N/A')}\n"
                 f"🌇 Sunset: {astro.get('sunset', 'N/A')}\n\n"
-                f"🌦 Condition Today: {condition}\n"
-                f"🌧 Rain Message: {get_rain_message(precip_mm)}\n\n"
+                f"💧 Humidity: {humidity}%\n"
+                f"🌧 Precipitation: {precip_mm} mm\n\n"
+                f"🌦 Fetched: {condition}\n"
+                f"🌧 Calculated: {get_rain_message(precip_mm)}\n\n"
                 f"🌪 Typhoon Level: {detect_typhoon_level(precip_mm, wind_kph)}\n"
             )
         else:
