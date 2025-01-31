@@ -1,0 +1,51 @@
+
+pull data fom config.json :
+{
+    "address": "Balagtas, Bulacan, Philippines",
+    "open_cage_api_key": "9bb391df378541a283fe99b321a33929",
+    "open_cage_url": "https://api.opencagedata.com/geocode/v1/json",
+    "api_key": "3d64780a9a2b44cbb4162710242812",
+    "url": "http://api.weatherapi.com/v1/current.json"
+}
+make it dynamic fetch form files
+
+Make an Editable Combobox,
+Pre-enter location on combobox, Default as location/Address from top of data of address.log
+put on footer ar below window, get the adrress,convert it to Coordinates using  open_cage_api_key and the pen_cage_api_key, if it returns true, 
+use it to fetch Weather data, using  api_key and url. Using the coodinates, convert it back to location, and append it to address.log, donot append if lacation/adress exist,
+Add Run/Stop Toggle button, when Run, Disable the the combobox and Start Fetching Weather data for every 30 secs (add threadings on this to avoid hangs/freeze), of Stop, enabale the combobox and Halt the fetching.
+add Time/Date along with the combobox, in the same row, update time/date every second, also add threading to this, format HH:MM:SS AM/PM and MMM DD, YYYY.
+
+also based on Values fetched on weather data, be able to predict if it will rain, not rain, drizzle, about to rain or the likes, result to Rain:
+
+Output the resutlts in Texbox, tex wrapped word per word
+Metric values, like this;
+
+Out put location as,         
+output_text.insert(tk.END, f"Address:\n{location}, {region}, {country}\nCoordinates: {lat}, {lon}\n\n")
+
+Coordinates
+
+Temperature: 32.1°C (Feels Like: 38.9°C)
+Condition: Partly cloudy
+Wind Speed: 6.5 kph (Direction: SSW) - 120 Degrees
+Wind Gusts: 8.8 kph
+Humidity: 59%
+Cloud Cover: 25%
+Precipitation: 0.19 mm
+Dew Point: 22.4°C
+Heat Index: 33.4°C
+UV Index: 1.0
+Visibility: 10.0 km
+Pressure: 1008.0 mb
+
+Rain:
+
+
+
+Answer in Chat instead....
+
+
+I will show you a files, don't comment yet till I tod you, and remerber the code, do not comment yet
+
+Esperanza, Misamis Oriental, Philippines : Rain Status: Raining

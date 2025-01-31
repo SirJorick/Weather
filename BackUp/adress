@@ -1,0 +1,145 @@
+import json
+import tkinter as tk
+from tkinter import ttk
+import requests
+import threading
+import time
+from datetime import datetime
+
+
+# Load config data
+def load_config():
+    with open("config.json", "r") as file:
+        config_data = json.load(file)
+    return config_data
+
+
+# Fetch location details from OpenCage API based on the address
+def get_coordinates(address, api_key, api_url):
+    url = f"{api_url}?q={address}&key={api_key}"
+    response = requests.get(url)
+    data = response.json()
+    if data["results"]:
+        location = data["results"][0]
+        formatted_address = location["formatted"]
+        lat, lng = location["geometry"]["lat"], location["geometry"]["lng"]
+        return formatted_address, lat, lng
+    return None, None, None
+
+
+# Fetch address list from address.log
+def load_addresses():
+    addresses = []
+    try:
+        with open("address.log", "r") as file:
+            for line in file:
+                addresses.append(line.strip())
+    except FileNotFoundError:
+        pass
+    return addresses
+
+
+# Save address to address.log if not already present
+def save_address(address):
+    addresses = load_addresses()
+    if address not in addresses:
+        with open("address.log", "a") as file:
+            file.write(address + "\n")
+
+
+# Fetch weather data from the API using coordinates
+def get_weather_data(lat, lng, api_key, url):
+    weather_url = f"{url}?key={api_key}&q={lat},{lng}"
+    response = requests.get(weather_url)
+    data = response.json()
+    if data.get("current"):
+        return data["current"]["temp_c"], data["current"]["condition"]["text"]
+    return None, None
+
+
+# Update text box with the location data
+def update_textbox():
+    selected_address = combobox.get()
+    config_data = load_config()
+    formatted_address, lat, lng = get_coordinates(selected_address, config_data["open_cage_api_key"],
+                                                  config_data["open_cage_url"])
+
+    if formatted_address:
+        save_address(formatted_address)  # Save new address to address.log
+        temp, condition = get_weather_data(lat, lng, config_data["api_key"], config_data["url"])
+
+        if temp is not None and condition:
+            text_output.delete(1.0, tk.END)
+            text_output.insert(tk.END, f"Location:\n{formatted_address}\n")
+            text_output.insert(tk.END, f"Weather:\n{temp}°C, {condition}\n")
+            text_output.insert(tk.END, f"Coordinates:\nLat: {lat}, Lon: {lng}\n")
+        else:
+            text_output.delete(1.0, tk.END)
+            text_output.insert(tk.END, "Unable to fetch weather data.")
+    else:
+        text_output.delete(1.0, tk.END)
+        text_output.insert(tk.END, "Location not found!")
+
+
+# Update time/date every second
+def update_time():
+    while running:
+        current_time = datetime.now().strftime("%I:%M:%S %p\n%b %d, %Y")
+        time_label.config(text=current_time)
+        time.sleep(1)
+
+
+# Start the periodic weather fetching
+def fetch_weather_periodically():
+    while running:
+        update_textbox()  # Fetch and update weather data
+        time.sleep(30)  # Wait for 30 seconds before fetching again
+
+
+# Toggle run/stop
+def toggle_run_stop():
+    global running
+    if running:
+        running = False
+        combobox.config(state="normal")  # Enable combobox
+        run_button.config(text="Run")
+    else:
+        running = True
+        combobox.config(state="disabled")  # Disable combobox
+        run_button.config(text="Stop")
+        threading.Thread(target=fetch_weather_periodically, daemon=True).start()  # Start weather fetch in background
+        threading.Thread(target=update_time, daemon=True).start()  # Start time update in background
+
+
+# Create the main application window
+root = tk.Tk()
+root.title("Location and Weather Finder")
+
+# Load addresses and add them to the ComboBox
+addresses = load_addresses()
+config_data = load_config()
+default_location = config_data["address"]  # Default location from config.json
+addresses.insert(0, default_location)
+
+# Create an editable ComboBox and populate it
+combobox = ttk.Combobox(root, values=addresses, state="normal")
+combobox.set(default_location)
+combobox.grid(row=0, column=0, padx=10, pady=10)
+
+# Create a Text widget to output the results
+text_output = tk.Text(root, wrap=tk.WORD, width=50, height=10)
+text_output.grid(row=1, column=0, columnspan=2, pady=10)
+
+# Time label to display current time and date
+time_label = tk.Label(root, font=("Arial", 12))
+time_label.grid(row=0, column=1, padx=10, pady=10)
+
+# Run/Stop Toggle button
+run_button = tk.Button(root, text="Run", command=toggle_run_stop)
+run_button.grid(row=2, column=0, columnspan=2, pady=10)
+
+# Global variable to control running state
+running = False
+
+# Run the application
+root.mainloop()
